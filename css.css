@@ -1,0 +1,162 @@
+/* Stili generali di base */
+body {
+    background-color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.bg-container {
+    background-color: #f1f4f6;
+    width: 400px;
+    padding: 50px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+h1 {
+    color: #1d232a;
+    font-size: 24px;
+    margin-bottom: 24px;
+    font-weight: 700;
+}
+
+/* Stili del Form (form.html) */
+.card-form {
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 320px;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    font-weight: 700;
+    font-size: 13px;
+    color: #1d232a;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #6b7280;
+    outline: none;
+}
+
+input:focus {
+    border-color: #9ca3af;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #23272f;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 8px;
+}
+
+button:hover {
+    background-color: #15181c;
+}
+
+/* Stili del Risultato (bmi.php) */
+.card-result {
+    width: 100%;
+    max-width: 320px;
+    padding: 24px 16px;
+    border-radius: 12px;
+    border-width: 2px;
+    border-style: solid;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.card-result .nome {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1d232a;
+    margin-bottom: 4px;
+}
+
+.card-result .dettagli {
+    font-size: 13px;
+    color: #4b5563;
+    margin-bottom: 16px;
+}
+
+.card-result .valore-bmi {
+    font-size: 40px;
+    font-weight: 800;
+    color: #1d232a;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.card-result .stato {
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+
+/* Varianti di colore per le 4 fasce di BMI */
+.card.sottopeso {
+    background-color: #E3EEF9;
+    border-color: #2F6FB3;
+}
+.card.sottopeso .stato {
+    color: #2F6FB3;
+}
+
+.card.normopeso {
+    background-color: #E3F4E6;
+    border-color: #256D34;
+}
+.card.normopeso .stato {
+    color: #256D34;
+}
+
+.card.sovrappeso {
+    background-color: #FCEBD7;
+    border-color: #9A4F06;
+}
+.card.sovrappeso .stato {
+    color: #9A4F06;
+}
+
+.card.obesita {
+    background-color: #FBE2E2;
+    border-color: #B32D2D;
+}
+.card.obesita .stato {
+    color: #B32D2D;
+}
+
+.link-back {
+    margin-top: 24px;
+    color: #1d232a;
+    font-size: 13px;
+    text-decoration: underline;
+}
