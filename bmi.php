@@ -1,5 +1,9 @@
 <?php
     // Gestione dei dati inviati dal form
+    if ($_SERVER["REQUEST_METHOD"] != "POST") {
+        header ("location: form.html");
+    }
+
     $nome = isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : 'Utente';
     $peso = isset($_POST['peso']) ? floatval($_POST['peso']) : 0;
     $altezza_cm = isset($_POST['altezza']) ? floatval($_POST['altezza']) : 0;
@@ -27,6 +31,17 @@
             $class_card = "obesita";
         }
     }
+
+    $data = date("d/m/o,H:i:s");
+    $ip = $_SERVER["SERVER_ADDR"];
+
+    $record = implode("," , [$data, $ip, $nome, $peso, $altezza_cm, $bmi_formatted, $categoria]).PHP_EOL;
+    $nomeFile = "log.csv";
+
+    $file = fopen($nomeFile, "a");
+
+    fwrite($file, $record);
+    fclose($file);
 ?>
 <!DOCTYPE html>
 <html lang="it">
