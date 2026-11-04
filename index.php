@@ -1,17 +1,42 @@
 <?php
 $mostra_risultato = false;
 
+// Variabili per i messaggi di errore
+$errore_nome = "";
+$errore_peso = "";
+$errore_altezza = "";
+
+// Variabili per il ripopolamento dei campi
+$valore_nome = "";
+$valore_peso = "";
+$valore_altezza = "";
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $nome = isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : 'Utente';
+    // 1. Recupero e sanitizzazione dei valori per ripopolare il form
+    $valore_nome = isset($_POST['nome']) ? trim(htmlspecialchars($_POST['nome'])) : '';
+    $valore_peso = isset($_POST['peso']) ? htmlspecialchars($_POST['peso']) : '';
+    $valore_altezza = isset($_POST['altezza']) ? htmlspecialchars($_POST['altezza']) : '';
+
+    // 2. Validazione specifica per ciascun campo (senza funzioni dentro empty())
+    if ($valore_nome === '') {
+        $errore_nome = "Valore non valido";
+    }
+
     $peso = isset($_POST['peso']) ? floatval($_POST['peso']) : 0;
+    if ($peso <= 0) {
+        $errore_peso = "Valore non valido";
+    }
+
     $altezza_cm = isset($_POST['altezza']) ? floatval($_POST['altezza']) : 0;
+    if ($altezza_cm <= 0) {
+        $errore_altezza = "Valore non valido";
+    }
 
-    $bmi_formatted = "0.00";
-    $categoria = "NON VALIDO";
-    $class_card = "sottopeso";
-
-    if ($peso > 0 && $altezza_cm > 0) {
+    // 3. Se NON ci sono errori, procediamo al calcolo e salvataggio
+    if ($errore_nome === '' && $errore_peso === '' && $errore_altezza === '') {
+        $nome = $valore_nome;
         $altezza_m = $altezza_cm / 100;
+        
         $bmi = $peso / ($altezza_m * $altezza_m);
         $bmi_formatted = number_format($bmi, 2, '.', '');
 
@@ -28,21 +53,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $categoria = "OBESITÀ";
             $class_card = "obesita";
         }
+
+        $data = date("d/m/Y, H:i:s");
+        $ip = $_SERVER["SERVER_ADDR"];
+
+        $record = implode(",", array($data, $ip, $nome, $peso, $altezza_cm, $bmi_formatted, $categoria)) . PHP_EOL;
+        $nomeFile = "log.csv";
+
+        $file = fopen($nomeFile, "a");
+        if ($file) {
+            fwrite($file, $record);
+            fclose($file);
+        }
+
+        $mostra_risultato = true;
     }
-
-    $data = date("d/m/Y, H:i:s");
-    $ip = $_SERVER["SERVER_ADDR"];
-
-    $record = implode(",", [$data, $ip, $nome, $peso, $altezza_cm, $bmi_formatted, $categoria]) . PHP_EOL;
-    $nomeFile = "log.csv";
-
-    $file = fopen($nomeFile, "a");
-    if ($file) {
-        fwrite($file, $record);
-        fclose($file);
-    }
-
-    $mostra_risultato = true;
 }
 ?>
 <!DOCTYPE html>
@@ -111,12 +136,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 14px;
-            color: #6b7280;
+            color: #1d232a;
             outline: none;
         }
 
         input:focus {
             border-color: #9ca3af;
+        }
+
+        /* Stile per i messaggi di errore */
+        .errore-testo {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 600;
         }
 
         button {
@@ -233,18 +266,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <?php else: ?>
             <h1>Calcolatore BMI</h1>
             <div class="card-form">
-                <form action="index.php" method="POST">
+                <form action="index.php" method="POST" novalidate>
                     <div class="form-group">
                         <label for="nome">Nome</label>
-                        <input type="text" id="nome" name="nome" placeholder="Luca" required>
+                        <input type="text" id="nome" name="nome" value="<?= $valore_nome ?>" placeholder="Luca">
+                        <?php if ($errore_nome !== ''): ?>
+                            <div class="errore-testo"><?= $errore_nome ?></div>
+                        <?php endif; ?>
                     </div>
                     <div class="form-group">
                         <label for="peso">Peso (kg)</label>
-                        <input type="number" step="0.1" id="peso" name="peso" placeholder="70" required>
+                        <input type="number" step="0.1" id="peso" name="peso" value="<?= $valore_peso ?>" placeholder="70">
+                        <?php if ($errore_peso !== ''): ?>
+                            <div class="errore-testo"><?= $errore_peso ?></div>
+                        <?php endif; ?>
                     </div>
                     <div class="form-group">
                         <label for="altezza">Altezza (cm)</label>
-                        <input type="number" id="altezza" name="altezza" placeholder="178" required>
+                        <input type="number" id="altezza" name="altezza" value="<?= $valore_altezza ?>" placeholder="178">
+                        <?php if ($errore_altezza !== ''): ?>
+                            <div class="errore-testo"><?= $errore_altezza ?></div>
+                        <?php endif; ?>
                     </div>
                     <button type="submit">Calcola</button>
                 </form>
